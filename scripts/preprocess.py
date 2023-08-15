@@ -5,7 +5,6 @@ import pandas as pd
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import SimpleImputer
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 
@@ -46,13 +45,6 @@ def preprocess(train_data_path: str, test_data_path: str, json_path: str):
     df_train = df_train.reset_index(drop=True)
     df_test = df_test.reset_index(drop=True)
 
-    # fill null values
-    imp_mode = SimpleImputer(missing_values=np.nan, strategy="most_frequent")
-    imp_mode.fit(df_train)
-
-    df_train = pd.DataFrame(imp_mode.transform(df_train), columns=df.columns)
-    df_test = pd.DataFrame(imp_mode.transform(df_test), columns=df.columns)
-
     # label encoding
     le = LabelEncoder()
 
@@ -66,12 +58,20 @@ def preprocess(train_data_path: str, test_data_path: str, json_path: str):
     y = df_train["price"].astype(float)
     X_test = df_test.drop("price", axis=1)
 
+
+    # fill null values
+    imp_mode = SimpleImputer(missing_values=np.nan, strategy="most_frequent")
+    imp_mode.fit(X)
+
+    X = pd.DataFrame(imp_mode.transform(X), columns=X.columns)
+    X_test = pd.DataFrame(imp_mode.transform(X_test), columns=X.columns)
+
     # scale the dataset with standard scaler
     scaler = StandardScaler()
     train_scaler = scaler.fit(X)
     X = train_scaler.transform(X)
     X_test = train_scaler.transform(X_test)
-
+    
     # make X a dataframe again
     X = pd.DataFrame(X, columns=df_train.columns[0:-1])
 
