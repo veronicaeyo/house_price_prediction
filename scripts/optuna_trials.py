@@ -5,6 +5,14 @@ import lightgbm as lgbm
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 
+import os
+
+from dotenv import load_dotenv
+
+# Load environment variables from a file named ".env"
+load_dotenv()
+
+
 
 X, y, X_test = preprocess(
     "../data/Housing_dataset_train.csv",
@@ -34,8 +42,7 @@ def objective(trial):
         X_train,
         y_train,
         eval_set=[(X_val, y_val)],
-        callbacks=[lgbm.callback.early_stopping(stopping_rounds=100)],
-        verbose=False,
+        callbacks=[lgbm.callback.early_stopping(stopping_rounds=100)]
     )
 
     preds = model.predict(X_val)
@@ -43,10 +50,14 @@ def objective(trial):
 
     return rmse
 
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_PORT = os.getenv('DB_PORT')
+DB_NAME = os.getenv('DB_NAME')
 
 if __name__ == "__main__":
     DB_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@localhost:{DB_PORT}/{DB_NAME}"
     study = optuna.create_study(
-        direction="minimize", storage=DB_URI
+        direction="minimize", storage=DB_URI, study_name="LightGBM_house_price", load_if_exists=True
     )
-    study.optimize(objective, n_trials=20)
+    study.optimize(objective, n_trials=100)
