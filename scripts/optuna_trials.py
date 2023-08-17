@@ -13,12 +13,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-
 X, y, X_test = preprocess(
     "../data/Housing_dataset_train.csv",
     "../data/Housing_dataset_test.csv",
-    "../state_to_region.json",
+    "../json/state_to_region.json",
 )
+
 
 X_train, X_val, y_train, y_val = train_test_split(X, y, random_state=7)
 
@@ -42,7 +42,7 @@ def objective(trial):
         X_train,
         y_train,
         eval_set=[(X_val, y_val)],
-        callbacks=[lgbm.callback.early_stopping(stopping_rounds=100)]
+        callbacks=[lgbm.callback.early_stopping(stopping_rounds=100)],
     )
 
     preds = model.predict(X_val)
@@ -50,14 +50,18 @@ def objective(trial):
 
     return rmse
 
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_PORT = os.getenv('DB_PORT')
-DB_NAME = os.getenv('DB_NAME')
+
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
 
 if __name__ == "__main__":
     DB_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@localhost:{DB_PORT}/{DB_NAME}"
     study = optuna.create_study(
-        direction="minimize", storage=DB_URI, study_name="LightGBM_house_price", load_if_exists=True
+        direction="minimize",
+        storage=DB_URI,
+        study_name="LightGBM_house_price",
+        load_if_exists=True,
     )
     study.optimize(objective, n_trials=100)
