@@ -1,0 +1,12 @@
+{
+  "1": ["Anambra", "Enugu", "Imo", "Lagos"],
+  "2": ["Abia", "Kano", "Rivers"],
+  "3": ["Akwa Ibom", "Ebonyi", "Ekiti", "Osun"],
+  "4": ["Katsina", "Ogun", "Ondo"],
+  "5": ["Bauchi", "Delta", "Jigawa", "Oyo"],
+  "6": ["Bayelsa", "Edo", "Gombe"],
+  "7": ["Cross River", "Kaduna", "Plateau", "Sokoto"],
+  "8": ["Kebbi", "Kogi", "Zamfara"],
+  "9": ["Adamawa", "Benue", "Kwara", "Nasarawa"],
+  "10": ["Borno", "Niger", "Taraba", "Yobe"]
+}
