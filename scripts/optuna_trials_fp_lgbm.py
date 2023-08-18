@@ -61,7 +61,15 @@ if __name__ == "__main__":
     study = optuna.create_study(
         direction="minimize",
         storage=DB_URI,
-        study_name="LightGBM_house_price",
+        study_name="lgbm_fp_house_price",
         load_if_exists=True,
     )
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=50)
+
+    print("Best trial:")
+    trial = study.best_trial
+
+    print("  Value: ", trial.value)
+    print("  Params: ")
+    for key, value in trial.params.items():
+        print("    {}: {}".format(key, value))
